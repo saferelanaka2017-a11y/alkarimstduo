@@ -1,0 +1,213 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Public developer profile without PII",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "photoURL": { "type": "string", "minLength": 0, "maxLength": 500 },
+        "role": { "type": "string", "enum": ["user", "developer", "admin"] },
+        "twoFactorEnabled": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "role", "twoFactorEnabled", "createdAt", "updatedAt"]
+    },
+    "UserPrivateSecurity": {
+      "title": "UserPrivateSecurity",
+      "description": "Owner-only PII and 2FA secret configuration",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "minLength": 0, "maxLength": 160 },
+        "provider": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "twoFactorEnabled": { "type": "boolean" },
+        "totpSecret": { "type": "string", "minLength": 0, "maxLength": 128 },
+        "backupCodesCount": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "provider", "twoFactorEnabled", "totpSecret", "backupCodesCount", "updatedAt"]
+    },
+    "SoftwareApp": {
+      "title": "SoftwareApp",
+      "description": "Managed software application published on AlKarim",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "slug": { "type": "string", "minLength": 2, "maxLength": 64, "pattern": "^[a-z0-9\\-]+$" },
+        "ownerId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "ownerName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "description": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "category": { "type": "string", "enum": ["productivity", "developer", "security", "utilities", "media", "enterprise"] },
+        "iconUrl": { "type": "string", "minLength": 0, "maxLength": 500 },
+        "latestVersion": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "channel": { "type": "string", "enum": ["stable", "beta", "canary"] },
+        "autoUpdate": { "type": "boolean" },
+        "mandatoryUpdate": { "type": "boolean" },
+        "supportedOS": { "type": "array" },
+        "downloadsCount": { "type": "number" },
+        "activeUsersCount": { "type": "number" },
+        "crashFreeRate": { "type": "number" },
+        "apiEnabled": { "type": "boolean" },
+        "visibility": { "type": "string", "enum": ["public", "private"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id", "slug", "ownerId", "ownerName", "name", "description", "category",
+        "iconUrl", "latestVersion", "channel", "autoUpdate", "mandatoryUpdate",
+        "supportedOS", "downloadsCount", "activeUsersCount", "crashFreeRate",
+        "apiEnabled", "visibility", "createdAt", "updatedAt"
+      ]
+    },
+    "AppRelease": {
+      "title": "AppRelease",
+      "description": "Version release build artifact for a SoftwareApp",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "appId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "ownerId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "channel": { "type": "string", "enum": ["stable", "beta", "canary"] },
+        "targetOS": { "type": "string", "enum": ["windows", "macos", "linux", "android", "ios", "cli"] },
+        "fileName": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "fileSizeBytes": { "type": "number" },
+        "sha256": { "type": "string", "minLength": 8, "maxLength": 128 },
+        "downloadUrl": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "releaseNotes": { "type": "string", "minLength": 0, "maxLength": 2000 },
+        "mandatory": { "type": "boolean" },
+        "visibility": { "type": "string", "enum": ["public", "private"] },
+        "status": { "type": "string", "enum": ["published", "scheduled"] },
+        "scheduledFor": { "type": "string", "minLength": 0, "maxLength": 40 },
+        "downloads": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id", "appId", "ownerId", "version", "channel", "targetOS",
+        "fileName", "fileSizeBytes", "sha256", "downloadUrl", "releaseNotes",
+        "mandatory", "visibility", "downloads", "createdAt"
+      ]
+    },
+    "ApiKeyRecord": {
+      "title": "ApiKeyRecord",
+      "description": "Hashed developer API token scoped to an owner",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "ownerId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "appId": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "prefix": { "type": "string", "minLength": 4, "maxLength": 24 },
+        "keyHash": { "type": "string", "minLength": 16, "maxLength": 128 },
+        "scopes": { "type": "array" },
+        "status": { "type": "string", "enum": ["active", "revoked"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "ownerId", "appId", "label", "prefix", "keyHash", "scopes", "status", "createdAt", "updatedAt"]
+    },
+    "PeriodicReport": {
+      "title": "PeriodicReport",
+      "description": "Periodic stability and adoption report for an application",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "ownerId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "appId": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "appName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "period": { "type": "string", "enum": ["daily", "weekly", "monthly"] },
+        "totalDownloads": { "type": "number" },
+        "activeUsers": { "type": "number" },
+        "autoUpdateRate": { "type": "number" },
+        "crashFreeRate": { "type": "number" },
+        "summary": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id", "ownerId", "appId", "appName", "period",
+        "totalDownloads", "activeUsers", "autoUpdateRate", "crashFreeRate",
+        "summary", "createdAt"
+      ]
+    },
+    "CompatibilityReport": {
+      "title": "CompatibilityReport",
+      "description": "Pre-publish OS compatibility test report for a release",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "appId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "ownerId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "targetOS": { "type": "string", "enum": ["windows", "macos", "linux", "android", "ios", "cli"] },
+        "overallStatus": { "type": "string", "enum": ["passed", "warnings", "failed"] },
+        "score": { "type": "number" },
+        "detectedFormat": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "summary": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id", "appId", "ownerId", "version", "targetOS",
+        "overallStatus", "score", "detectedFormat", "summary", "createdAt"
+      ]
+    },
+    "PackageChunk": {
+      "title": "PackageChunk",
+      "description": "Persistent binary chunk backup for uploaded packages up to 2 MB",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 96, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "appId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "packageId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "ownerId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "visibility": { "type": "string", "enum": ["public", "private"] },
+        "chunkIndex": { "type": "number" },
+        "totalChunks": { "type": "number" },
+        "fileSizeBytes": { "type": "number" },
+        "sha256": { "type": "string", "minLength": 8, "maxLength": 128 },
+        "dataBase64": { "type": "string", "minLength": 1, "maxLength": 750000 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id", "appId", "packageId", "ownerId", "visibility",
+        "chunkIndex", "totalChunks", "fileSizeBytes", "sha256", "dataBase64", "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Public developer profile without PII"
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": { "$ref": "#/entities/UserPrivateSecurity" },
+      "description": "Owner-only PII and 2FA configuration"
+    },
+    "/apps/{appId}": {
+      "schema": { "$ref": "#/entities/SoftwareApp" },
+      "description": "Software applications published on AlKarim"
+    },
+    "/apps/{appId}/releases/{releaseId}": {
+      "schema": { "$ref": "#/entities/AppRelease" },
+      "description": "Version releases and OS build packages for an application"
+    },
+    "/apps/{appId}/compatibility_reports/{reportId}": {
+      "schema": { "$ref": "#/entities/CompatibilityReport" },
+      "description": "Pre-publish compatibility test reports for application releases"
+    },
+    "/apps/{appId}/package_chunks/{chunkId}": {
+      "schema": { "$ref": "#/entities/PackageChunk" },
+      "description": "Persistent binary chunk backup for uploaded packages up to 2 MB"
+    },
+    "/api_keys/{keyId}": {
+      "schema": { "$ref": "#/entities/ApiKeyRecord" },
+      "description": "Owner-only hashed API keys for CI/CD and SDK integration"
+    },
+    "/reports/{reportId}": {
+      "schema": { "$ref": "#/entities/PeriodicReport" },
+      "description": "Owner-only periodic performance and stability reports"
+    }
+  }
+}

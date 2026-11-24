@@ -1,0 +1,8 @@
+{
+  "name": "AlKarim",
+  "description": "منصة AlKarim السحابية لنشر التطبيقات، التحديث التلقائي الفوري، تحليلات الاستخدام اللحظية، والتكامل البرمجي عبر الأنظمة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
